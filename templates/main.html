@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Checker</title>
+    <!-- Include any necessary CSS styles here -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.min.css" rel="stylesheet"/>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="/static/style.css" rel="stylesheet">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container contact-form">
+        <div class="contact-image">
+            <img src="/static/icon.png" alt="rocket_contact"/>
+        </div>
+        <form id="plagiarism-form">
+            <h3>Plagiarism Checker</h3>
+            <div id="result">No Plagiarism Detected!</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" id="project_name" name="project_name" class="form-control" placeholder="Project Name*" required />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="college_name" name="college_name" class="form-control" placeholder="College Name *" required />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="btnSubmit" class="btnContact" value="Send Message" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="file" class="form-control" name="documents" id="documents" accept=".doc, .docx, .pdf, .txt" multiple required />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.getElementById('plagiarism-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var formData = new FormData();
+        var documentsInput = document.getElementById('documents');
+        for (var i = 0; i < documentsInput.files.length; i++) {
+            formData.append('documents', documentsInput.files[i]);
+        }
+
+        formData.append('project_name', document.getElementById('project_name').value);
+        formData.append('college_name', document.getElementById('college_name').value);
+
+        fetch('/check_plagiarism', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('result').innerText = data.result;
+            event.target.reset();
+        });
+    });
+</script>
+</html>
